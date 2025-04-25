@@ -3,5 +3,5 @@ A Python project that aims to help travellers plan optimal travel routes between
 ## Features
 - Graph representation of locations using cities names as nodes and paths and the connecting roads or transportation routes as edges.
 - Adds edges between nodes with attributes[distance,travel time,cost ,mode of transport].
-- Dijkstra's algorithm for shortest path
-- Uses networkX and Matplotlib to visualize the graph
+- Dijkstra's algorithm for shortest path.
+- Uses networkX and Matplotlib to visualize the graph.
