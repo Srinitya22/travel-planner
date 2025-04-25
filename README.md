@@ -1,4 +1,4 @@
-# travel-planner
+# Travel-planner
 A Python project that aims to help travellers plan optimal travel routes between different locations using graph algorithms.This applicatioon will be able to calculate the shortest path between two locations,considering factors like distance,travel time and cost.
 ## Features
 - Graph representation of locations using cities names as nodes and paths and the connecting roads or transportation routes as edges.
