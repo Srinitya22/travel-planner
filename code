@@ -1,0 +1,164 @@
+# Code
+import heapq
+import networkx as nx
+import matplotlib.pyplot as plt
+
+class Graph:
+    def __init__(self):
+        self.graph = {}
+        self.max_distance=0
+
+    def insert(self, from_node, to_node, distance, travel_time, cost, mode_of_transport):
+        if from_node not in self.graph:
+            self.graph[from_node] = []
+        if to_node not in self.graph:
+            self.graph[to_node] = []
+        self.graph[from_node].append((to_node, distance, travel_time, cost, mode_of_transport))
+        self.graph[to_node].append((from_node, distance, travel_time, cost, mode_of_transport))
+
+    def calculate_combined_score(self, cost, travel_time, distance, weight_cost=0.5, weight_time=0.3, weight_distance=0.2):
+        normalized_cost = cost / max_cost if max_cost > 0 else 0
+        normalized_time = travel_time / max_time if max_time > 0 else 0
+        normalized_distance = distance / self.max_distance if self.max_distance > 0 else 0
+
+
+        combined_score = (weight_cost * normalized_cost +
+                          weight_time * normalized_time +
+                          weight_distance * normalized_distance)
+        return combined_score
+
+    def dijkstra(self, start, end):
+        queue = []
+        heapq.heappush(queue, (0, start))
+        distances = {node: float('infinity') for node in self.graph}
+        distances[start] = 0
+        previous_nodes = {node: None for node in self.graph}
+        total_costs = {node: 0 for node in self.graph}
+        total_times = {node: 0 for node in self.graph}
+        mode = {node: None for node in self.graph}
+
+        while queue:
+            current_score, current_node = heapq.heappop(queue)
+
+            if current_node == end:
+                path = []
+                while current_node is not None:
+                    path.append(current_node)
+                    current_node = previous_nodes[current_node]
+                return path[::-1], distances[end], total_costs[end], total_times[end], mode[end]
+
+            for neighbor, distance, travel_time, cost, mode_of_transport in self.graph[current_node]:
+                combined_score = self.calculate_combined_score(cost, travel_time, distance)
+                new_score = current_score + combined_score
+
+                if new_score < distances[neighbor]:
+                    distances[neighbor] = new_score
+                    previous_nodes[neighbor] = current_node
+                    total_costs[neighbor] = total_costs[current_node] + cost
+                    total_times[neighbor] = total_times[current_node] + travel_time
+                    mode[neighbor] = mode_of_transport
+                    heapq.heappush(queue, (new_score, neighbor))
+
+        return None, float('infinity'), 0, 0, None
+
+    def visualize_graph(self):
+        G = nx.Graph()
+        for city, neighbors in self.graph.items():
+            for neighbor, distance, travel_time, cost, mode_of_transport in neighbors:
+                G.add_edge(city, neighbor, weight=distance)
+
+        pos = nx.spring_layout(G, k=0.5, iterations=50)
+        plt.figure(figsize=(12, 8))
+        nx.draw(G, pos, with_labels=True, node_size=1500, node_color='yellow', font_size=10 , edge_color='black', width=2)
+        edge_labels = {(u, v): f"{d['weight']} km" for u, v, d in G.edges(data=True)}
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color='black', font_size=8)
+        plt.title("Travel Route Graph", fontsize=16)
+        plt.axis('off')
+        plt.show()
+
+        def calculate_max_distance(self):
+           max_distance = 0
+           for city, neighbors in self.graph.items():
+               for neighbor, distance, _, _, _ in neighbors:  # Ignore other values
+                max_distance = max(max_distance, distance)
+           return max_distance
+
+def convert_cost_to_currency(currency, total_cost):
+    conversion_rates = {
+        'Usd': 1.0,
+        'Euros': 1.1,
+        'Rupees': 0.012,
+        'Pounds': 1.3,
+        'Yen': 0.0091
+    }
+
+    if currency in conversion_rates:
+        return total_cost * conversion_rates[currency]
+    else:
+        print("Invalid currency selected.")
+        return total_cost
+
+
+if __name__ == "__main__":
+    g = Graph()
+    g.insert("New york", "Los angeles", distance=3940, travel_time=6, cost=500, mode_of_transport="Flight")
+    g.insert("New york", "London", distance=5560, travel_time=7, cost=700, mode_of_transport="Flight")
+    g.insert("London", "Paris", distance=450, travel_time=1.5, cost=100, mode_of_transport="Train")
+    g.insert("Paris", "Berlin", distance=1050, travel_time=2, cost=150, mode_of_transport="Train")
+    g.insert("Berlin", "Mumbai", distance=6500, travel_time=10, cost=800, mode_of_transport="Flight")
+    g.insert("Mumbai", "Tokyo", distance=5500, travel_time=8, cost=700, mode_of_transport="Flight")
+    g.insert("Tokyo", "Los angeles", distance=8800, travel_time=12, cost=1200, mode_of_transport="Flight")
+    g.insert("Los angeles", "San francisco", distance=600, travel_time=1.5, cost=100, mode_of_transport="Train")
+    g.insert("San francisco", "Vancouver", distance=1300, travel_time=2.5, cost=200, mode_of_transport="Bus")
+    g.insert("Vancouver", "Toronto", distance=4000, travel_time=5, cost=600, mode_of_transport="Flight")
+    g.insert("Mumbai", "Delhi", distance=300, travel_time=1, cost=50, mode_of_transport="Train")
+    g.insert("Delhi", "Bangkok", distance=2500, travel_time=4, cost=300, mode_of_transport="Flight")
+    g.insert("Bangkok", "Singapore", distance=1400, travel_time=2, cost=200, mode_of_transport="Flight")
+    g.insert("Singapore", "Sydney", distance=6300, travel_time=8, cost=800, mode_of_transport="Flight")
+    g.insert("Sydney", "Auckland", distance=2100, travel_time=3, cost=400, mode_of_transport="Flight")
+    g.insert("Auckland", "Los angeles", distance=12000, travel_time=14, cost=1500, mode_of_transport="Flight")
+    g.insert("Delhi", "Kolkata", distance=1500, travel_time=2, cost=200, mode_of_transport="Flight")
+    g.insert("Kolkata", "Bangkok", distance=600, travel_time=1.5, cost=100, mode_of_transport="Flight")
+    g.insert("Mumbai", "Chennai", distance=1000, travel_time=2, cost=150, mode_of_transport="Train")
+    g.insert("Chennai", "Singapore", distance=3000, travel_time=5, cost=400, mode_of_transport="Flight")
+    g.insert("Tokyo", "Seoul", distance=1200, travel_time=2, cost=250, mode_of_transport="Flight")
+    g.insert("Seoul", "Beijing", distance=950, travel_time=2, cost=200, mode_of_transport="Flight")
+    g.insert("Beijing", "Moscow", distance=3000, travel_time=5, cost=500, mode_of_transport="Train")
+    g.insert("Moscow", "Berlin", distance=1600, travel_time=3, cost=300, mode_of_transport="Train")
+
+    locations = list(g.graph.keys())
+    print("Available locations:", ", ".join(locations))
+
+    start_location = input("Travelling from: ").strip().capitalize()
+    end_location = input("Travelling to: ").strip().capitalize()
+    currency = input("Enter your currency (Usd, Euros, Rupees, Pounds, Yen): ").strip().capitalize()
+    budget = float(input("Enter your budget in your currency: "))
+
+    max_cost = convert_cost_to_currency(currency, budget)
+    max_time = int(input("Enter maximum travel time in hours: "))
+
+
+    if start_location not in locations or end_location not in locations:
+        print("Invalid location selected. Please choose from the available locations.")
+    else:
+
+        path, combined_score, total_cost, total_time, mode = g.dijkstra(start_location, end_location)
+
+        if path is None:
+            print("No path found.")
+        else:
+            total_cost_in_currency = convert_cost_to_currency(currency, total_cost)
+            print(f"The optimal path from {start_location} to {end_location} is: {' -> '.join(path)}")
+            print(f"Total cost: {total_cost_in_currency:.2f}{currency.capitalize()}")
+            if total_cost_in_currency > max_cost:
+                print("Warning: The total cost exceeds your budget.")
+            else:
+                print('The total cost is within your budget')
+            print(f"Total travel time: {total_time} hours")
+            if total_time > max_time:
+                print("Warning: The total travel time exceeds your maximum allowed time.")
+            else:
+                print('The total travel time is within your maximum allowed time')
+            print(f"Recommended mode of transport: {mode}")
+
+    g.visualize_graph()
