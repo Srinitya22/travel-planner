@@ -1,0 +1,29 @@
+# Output
+#Case 1 : When the travel plan is optimum
+#output of case 1: 
+Available locations: New york, Los angeles, London, Paris, Berlin, Mumbai, Tokyo, San francisco, Vancouver, Toronto, Delhi, Bangkok, Singapore, Sydney, Auckland, Kolkata, Chennai, Seoul, Beijing, Moscow
+Travelling from: london
+Travelling to: paris
+Enter your currency (Usd, Euros, Rupees, Pounds, Yen): usd
+Enter your budget in your currency: 5000
+Enter maximum travel time in hours: 2
+The optimal path from London to Paris is: London -> Paris
+Total cost: 100.00Usd
+The total cost is within your budget
+Total travel time: 1.5 hours
+The total travel time is within your maximum allowed time
+Recommended mode of transport: Train
+#Case 2 : When the travel plan is not optimum[due to time or budget]
+#output :
+Available locations: New york, Los angeles, London, Paris, Berlin, Mumbai, Tokyo, San francisco, Vancouver, Toronto, Delhi, Bangkok, Singapore, Sydney, Auckland, Kolkata, Chennai, Seoul, Beijing, Moscow
+Travelling from: toronto
+Travelling to: paris
+Enter your currency (Usd, Euros, Rupees, Pounds, Yen): usd
+Enter your budget in your currency: 2500
+Enter maximum travel time in hours: 2
+The optimal path from Toronto to Paris is: Toronto -> Vancouver -> San francisco -> Los angeles -> New york -> London -> Paris
+Total cost: 2200.00Usd
+The total cost is within your budget
+Total travel time: 23.5 hours
+Warning: The total travel time exceeds your maximum allowed time.
+Recommended mode of transport: Train
